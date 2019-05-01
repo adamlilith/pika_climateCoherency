@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PARAMETERS name="Sky View Factor">
+  <OPTION type="grid_system" id="PARAMETERS_GRID_SYSTEM" name="Grid system">
+    <CELLSIZE>0.0020833333</CELLSIZE>
+    <XMIN>-133.1345138889</XMIN>
+    <XMAX>-100.08868108429999</XMAX>
+    <YMIN>31.8863194444</YMIN>
+    <YMAX>49.9988191546</YMAX>
+  </OPTION>
+  <DATA type="grid" id="DEM" name="Elevation">C:\ecology\Drive\Research\Iconic Species\Elevation\GMTED2010\gmted2010_croppedToOchotonaPrincepsIucnRangePlus400km.tif</DATA>
+  <DATA type="grid" id="VISIBLE" name="Visible Sky">CREATE</DATA>
+  <DATA type="grid" id="SVF" name="Sky View Factor">CREATE</DATA>
+  <DATA type="grid" id="SIMPLE" name="Sky View Factor (Simplified)">NOT SET</DATA>
+  <DATA type="grid" id="TERRAIN" name="Terrain View Factor">NOT SET</DATA>
+  <DATA type="grid" id="DISTANCE" name="View Distance">NOT SET</DATA>
+  <OPTION type="double" id="RADIUS" name="Maximum Search Radius">10000.000000</OPTION>
+  <OPTION type="choice" id="METHOD" name="Method" index="1">sectors</OPTION>
+  <OPTION type="double" id="DLEVEL" name="Multi Scale Factor">3.000000</OPTION>
+  <OPTION type="integer" id="NDIRS" name="Number of Sectors">8</OPTION>
+</PARAMETERS>
