@@ -955,7 +955,7 @@ if ('derived' %in% do) {
 # say('###########################################################################################################################')
 
 # say('I need to characterize the differences between division units apart from the presences they possess. Thus, I will train ENMs on each unit (as if it were a species) using 1) a set of background sites drawn from each unit in a spatially random manner ("representative sites") contrasted with 2) a set of background sites drawn from across all occupied units also drawn randomly.')
-# say('There is a choice to be made between using an equal number of represenative sites per unit (e.g., 1000) versus using a number equal to the number of presences in each unit. However, I am using a weighted performance metric when calculating ENM skill for the presence-ENMS which is intended to account for differences in prevalance of presences in each unit. Hence, I should select representative sites in number equal to the area of the unit relative to the area of all units.')
+# say('There is a choice to be made between using an equal number of representative sites per unit (e.g., 1000) versus using a number equal to the number of presences in each unit. However, I am using a weighted performance metric when calculating ENM skill for the presence-ENMS which is intended to account for differences in prevalence of presences in each unit. Hence, I should select representative sites in number equal to the area of the unit relative to the area of all units.')
 
 # ## BAUHAUS
 # # 1 select two sets of sites, both from all units with presences
