@@ -1,0 +1,32 @@
+scheme,unit,unitNice,unitNiceShort,unitNiceVeryShort,unitAbbrev,color,colorWord,colorScheme,factorInteger
+cladeNonOverlap,all,Composite,Composite,Comp,C,black,black,cornflowerblue,NA
+cladeNonOverlap,fenisex,Cascades,Cascades,Casc,Cas,#4daf4a,green,cornflowerblue,1
+cladeNonOverlap,schisticeps,Sierran,Sierran,Sierran,SN,#e41a1c,red,cornflowerblue,2
+cladeNonOverlap,princeps,Northern Rockies,N Rockies,N Rock,NR,#377eb8,bluish,cornflowerblue,3
+cladeNonOverlap,uinta,Utah,Utah,Utah,Ut,#ff7f00,orange,cornflowerblue,4
+cladeNonOverlap,saxatilis,Southern Rockies,S Rockies,S Rock,SR,#984ea3,purple,cornflowerblue,5
+ecoregionEpa3Modified,all,Composite,Composite,Comp,C,black,black,chartreuse3,NA
+ecoregionEpa3Modified,Blue Mtns & Idaho Batholith,Blue Mountains/Idaho Batholith,Blue Mtns/Idaho Batholith,Blue Mtns/ID Bath,BI,cyan,,chartreuse3,1
+ecoregionEpa3Modified,Canadian Rockies,Canadian Rockies,Canadian Rockies,Can Rock's,CR,#1f78b4,,chartreuse3,2
+ecoregionEpa3Modified,Cascades,Cascades,Cascades,Cascades,Ca,#33a02c,,chartreuse3,3
+ecoregionEpa3Modified,Cent Basin & Range,Central Basin/Range,Cent Basin/Range,Cent Basin,CB,coral,,chartreuse3,4
+ecoregionEpa3Modified,Colo Plats & Wasatch-Uinta Mtns,Colorado Plateaus/Wasatch-Uinta Mountains,Colo Plats/Wasatch-Uinta Mtns,Col Plat/WU Mtns,CW,#fb9a99,,chartreuse3,5
+ecoregionEpa3Modified,E Cascades Slopes & Foothills,Eastern Cascades Slopes/Foothills,E Cascades,E Cascades,EC,#e31a1c,,chartreuse3,6
+ecoregionEpa3Modified,N Basin & Range,Northern Basin/Range,N Basin/Range,N Basin,NB,#fdbf6f,,chartreuse3,7
+ecoregionEpa3Modified,N Cascades,Northern Cascades,N Cascades,N Cascades,NC,#ff7f00,,chartreuse3,8
+ecoregionEpa3Modified,N Rockies,Nothern Rockies,N Rockies,N Rockies,NR,deeppink,,chartreuse3,9
+ecoregionEpa3Modified,S Rockies,Southern Rockies,S Rockies,S Rockies,SR,#6a3d9a,,chartreuse3,10
+ecoregionEpa3Modified,Sierra Nevada,Sierra Nevada,Sierra Nevada,Sierra Nev,SN,gold3,,chartreuse3,11
+ecoregionEpa3Modified,Snake R Plain & Mid-Rockies,Snake River Plain/Mid-Rockies,Snake River/Mid-Rockies,Snake R/Mid-Rock,SM,#b15928,,chartreuse3,12
+elevQuantWrtPaeMin,all,Composite,Composite,Comp,C,black,,firebrickred1,NA
+elevQuantWrtPaeMin,Lowest,Lowest,Lowest,Lowest,Lst,#8c510a,,firebrickred1,1
+elevQuantWrtPaeMin,Low,Low,Low,Low,Lw,#d8b365,,firebrickred1,2
+elevQuantWrtPaeMin,Middle,Middle,Middle,Middle,Mi,#c51b7d,,firebrickred1,3
+elevQuantWrtPaeMin,High,High,High,High,Hh,#5ab4ac,,firebrickred1,4
+elevQuantWrtPaeMin,Highest,Highest,Highest,Highest,Hst,#01665e,,firebrickred1,5
+physioFenneman,all,Composite,Composite,Comp,C,black,black,brown,NA
+physioFenneman,Cascades,Cascades,Cascades,Casc,Ca,#4daf4a,green,brown,1
+physioFenneman,Sierra Nevada,Sierra Nevada,Sierras,Sierras,SN,#e41a1c,red,brown,2
+physioFenneman,Northern Rockies,Northern Rockies,N Rockies,N Rock,NR,#377eb8,bluish,brown,3
+physioFenneman,Great Basin,Great Basin,G Basin,G Basin,GB,#ff7f00,orange,brown,4
+physioFenneman,Southern Rockies,Southern Rockies,S Rockies,S Rock,SR,#984ea3,purple,brown,5

@@ -1,5 +1,5 @@
 ### PIKA NON-STATIONARITY OMNIBUS VARIABLES
-# source(paste0(drive, 'ecology/Drive/Research/Iconic Species/Scripts - Non-stationarity/!Omnibus Variables for Pika Non-Stationarity Analysis.r'))
+# source(paste0(drive, 'ecology/Drive/Research/Iconic Species/pika_climateCoherency/!Omnibus Variables for Pika Non-Stationarity Analysis.r'))
 
 ### SETUP ###
 ### VARIABLES ###
@@ -28,13 +28,13 @@
 
 	memory.limit(memory.limit() * 2^30)
     
-	library(checkpoint)
-	checkpoint(
-		snapshotDate = '2017-05-15',
-		project = paste0(drive, '/ecology/Drive/Research/Iconic Species/Scripts - Non-stationarity'),
-		checkpointLocation = paste0(drive, '/ecology/Drive/Research/Iconic Species'),
-		use.knitr=FALSE
-	)
+	# library(checkpoint)
+	# checkpoint(
+		# snapshotDate = '2017-05-15',
+		# project = paste0(drive, '/ecology/Drive/Research/Iconic Species/pika_climateCoherency'),
+		# checkpointLocation = paste0(drive, '/ecology/Drive/Research/Iconic Species'),
+		# use.knitr=FALSE
+	# )
 
 	options(stringsAsFactors=FALSE)
 	gc()
@@ -104,21 +104,21 @@
 	enableJIT(1)
 	setCompilerOptions(suppressUndefined=TRUE)
 
-	source(paste0(drive, 'ecology/Drive/R/SDM/SDM - Train SDMs.r'))
-	source(paste0(drive, 'ecology/Drive/R/SDM/SDM - Evaluate Models.r'))
-	source(paste0(drive, 'ecology/Drive/R/SDM/SDM - Collate Data for a Species and Create Partitions.r'))
-	source(paste0(drive, 'ecology/Drive/r/SDM/SDM - Write Raster from Model Basic Function.r'))
-	source(paste0(drive, 'ecology/Drive/R/Center and Standardize Predictors.r'))
+	source(paste0(drive, 'ecology/Drive/R/!Other/SDM/SDM - Train SDMs.r'))
+	source(paste0(drive, 'ecology/Drive/R/!Other/SDM/SDM - Evaluate Models.r'))
+	source(paste0(drive, 'ecology/Drive/R/!Other/SDM/SDM - Collate Data for a Species and Create Partitions.r'))
+	source(paste0(drive, 'ecology/Drive/R/!Other/SDM/SDM - Write Raster from Model Basic Function.r'))
+	source(paste0(drive, 'ecology/Drive/R/!Other/Center and Standardize Predictors.r'))
 
-	source(paste0(drive, 'ecology/Drive/R/Calculate Day of Year from Year, Month, and Day.r'))
+	source(paste0(drive, 'ecology/Drive/R/!Other/Calculate Day of Year from Year, Month, and Day.r'))
 
-	source(paste0(drive, 'ecology/Drive/r/SDM/SDM - Predict Model Object.r'))
-	source(paste0(drive, 'ecology/Drive/R/Broennimann.r'))
+	source(paste0(drive, 'ecology/Drive/R/!Other/SDM/SDM - Predict Model Object.r'))
+	source(paste0(drive, 'ecology/Drive/R/!Other/Broennimann.r'))
 
 
-	source(paste0(drive, 'ecology/Drive/Research/Iconic Species/Scripts - Non-stationarity/Function - Extract Environmental Data Based on Date.r'))
-	source(paste0(drive, 'ecology/Drive/Research/Iconic Species/Scripts - Non-stationarity/Function - Calculate Derived Climate Variables.r'))
-	source(paste0(drive, 'ecology/Drive/Research/Iconic Species/Scripts - Non-stationarity/Function - Calculate KDE-Based Weight for Sites.r'))
+	source(paste0(drive, 'ecology/Drive/Research/Iconic Species/pika_climateCoherency/Function - Extract Environmental Data Based on Date.r'))
+	source(paste0(drive, 'ecology/Drive/Research/Iconic Species/pika_climateCoherency/Function - Calculate Derived Climate Variables.r'))
+	source(paste0(drive, 'ecology/Drive/Research/Iconic Species/pika_climateCoherency/Function - Calculate KDE-Based Weight for Sites.r'))
 
 #################
 ### VARIABLES ###
@@ -147,7 +147,7 @@
 	}
 
 	# unit meta data
-	unitMeta <- read.csv(paste0(workDir, 'Analysis - Non-stationarity/Scheme and Unit Long and Short Names, Factor Levels, & Formatting.csv'))
+	unitMeta <- read.csv(paste0(workDir, 'pika_climateCoherency/Scheme and Unit Long and Short Names, Factor Levels, & Formatting.csv'))
 
 	# colors for units
 	getUnitCols <- function(units, incAll=TRUE) {
@@ -160,11 +160,11 @@
 	}
 
 	# calanedar days of the year
-	doyNonLeapYear <- read.csv(paste0(drive, 'ecology/Drive/R/Ancillary Files/daysOfYear_nonLeapYear.csv'))
-	doyLeapYear <- read.csv(paste0(drive, 'ecology/Drive/R/Ancillary Files/daysOfYear_leapYear.csv'))
+	doyNonLeapYear <- read.csv(paste0(drive, 'ecology/Drive/R/!Other/Ancillary Files/daysOfYear_nonLeapYear.csv'))
+	doyLeapYear <- read.csv(paste0(drive, 'ecology/Drive/R/!Other/Ancillary Files/daysOfYear_leapYear.csv'))
 
 	# predictors
-	fields <- read.csv(paste0(workDir, 'Analysis - Non-stationarity/Predictors - Definitions, Names, and Statistics.csv'))
+	fields <- read.csv(paste0(workDir, 'pika_climateCoherency/Predictors - Definitions, Names, and Statistics.csv'))
 	predictorsToUse <- fields$factor[fields$useAsPredictor]
 	extendedPredictorsToUse <- c('obsYear', 'obsMonth', 'obsDayOfMonth', 'obsDayOfYear', 'cellAreaPrism_km2', 'cellAreaGmted2010_km2', 'elevPrism_m', 'elevGmted2010_m', 'slopePrism_deg', 'slopeGmted2010_deg', 'aspectPrism_deg', 'aspectGmted2010_deg', 'tpiPrism_m', 'tpiGmted2010_m', 'triPrism_m', 'triGmted2010_m', predictorsToUse)
 
@@ -520,7 +520,7 @@
 	### information and polygons of a division scheme
 	schemeInfo <- function(scheme, poly=FALSE) {
 		# schemeInfo  Returns useful strings and shapefile polygons for a scheme
-		# source(paste0(drive, 'ecology/Drive/Research/Iconic Species/Scripts - Non-stationarity/Function - Information and Polygons of a Division Scheme.r')
+		# source(paste0(drive, 'ecology/Drive/Research/Iconic Species/pika_climateCoherency/Function - Information and Polygons of a Division Scheme.r')
 		#
 		# scheme	name of scheme
 		# workDir	working directory

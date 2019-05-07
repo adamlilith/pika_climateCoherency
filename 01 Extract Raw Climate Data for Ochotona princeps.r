@@ -1120,64 +1120,64 @@ say('###########################################################################
 		
 	dev.off()
 
-# say('#####################################################')
-# say('### calculate similarity between division schemes ###')
-# say('#####################################################')
+# # # say('#####################################################')
+# # # say('### calculate similarity between division schemes ###')
+# # # say('#####################################################')
 
-# pres <- getPres()
+# # # pres <- getPres()
 
-# say('Similarity: Given division scheme A and B, draw a point x and note which unit of A (call it alpha) and B (call it beta) the point is in.  Then draw another point y at random.  Note if y is also in alpha and beta.  If so, increment a counter by 1.  Repeat a large number of times and report the total sum of increments divided by the total number of draws.')
+# # # say('Similarity: Given division scheme A and B, draw a point x and note which unit of A (call it alpha) and B (call it beta) the point is in.  Then draw another point y at random.  Note if y is also in alpha and beta.  If so, increment a counter by 1.  Repeat a large number of times and report the total sum of increments divided by the total number of draws.')
 
-# schemes <- c('ecoregionEpaLevel3Modified', 'ecoregionBaileyProvince', 'physioFennemanL2', 'physioHammond', 'climateGEnSZone', 'climateKoppen', 'elevZoneAboveMinPme')
+# # # schemes <- c('ecoregionEpaLevel3Modified', 'ecoregionBaileyProvince', 'physioFennemanL2', 'physioHammond', 'climateGEnSZone', 'climateKoppen', 'elevZoneAboveMinPme')
 	
-# similarity <- matrix(0, nrow=7, ncol=7)
-# diag(similarity) <- NA
-# rownames(similarity) <- colnames(similarity) <- schemes
+# # # similarity <- matrix(0, nrow=7, ncol=7)
+# # # diag(similarity) <- NA
+# # # rownames(similarity) <- colnames(similarity) <- schemes
 
-# count <- 1
-# while (count <= 10000) {
+# # # count <- 1
+# # # while (count <= 10000) {
 
-	# x <- pres[sample(1:nrow(pres), 1), ]
-	# y <- pres[sample(1:nrow(pres), 1), ]
+	# # # x <- pres[sample(1:nrow(pres), 1), ]
+	# # # y <- pres[sample(1:nrow(pres), 1), ]
 
-	# # see if any region was assigned NA
-	# wasAssignedAllRegions <- if (any(is.na(x[ , schemes])) | any(is.na(y[ , schemes]))) {
-		# FALSE
-	# } else {
-		# TRUE
-	# }
+	# # # # see if any region was assigned NA
+	# # # wasAssignedAllRegions <- if (any(is.na(x[ , schemes])) | any(is.na(y[ , schemes]))) {
+		# # # FALSE
+	# # # } else {
+		# # # TRUE
+	# # # }
 	
-	# if (wasAssignedAllRegions) {
+	# # # if (wasAssignedAllRegions) {
 
-		# count <- count + 1
+		# # # count <- count + 1
 	
-		# for (A in schemes) {
+		# # # for (A in schemes) {
 
-			# alphaX <- x[ , A]
-			# alphaY <- y[ , A]
+			# # # alphaX <- x[ , A]
+			# # # alphaY <- y[ , A]
 				
-			# for (B in schemes) {
+			# # # for (B in schemes) {
 
-				# betaX <- x[ , B]
-				# betaY <- y[ , B]
+				# # # betaX <- x[ , B]
+				# # # betaY <- y[ , B]
 					
-				# if (A != B) {
+				# # # if (A != B) {
 				
-					# if (alphaX == alphaY & betaX == betaY) similarity[A, B] <- similarity[A, B] + 1
+					# # # if (alphaX == alphaY & betaX == betaY) similarity[A, B] <- similarity[A, B] + 1
 				
-				# }
+				# # # }
 			
-			# }
+			# # # }
 			
-		# }
+		# # # }
 		
-	# }
+	# # # }
 		
-# }
+# # # }
 
-# similarity <- round(similarity / 10000, 2)
+# # # similarity <- round(similarity / 10000, 2)
 
-# write.csv(similarity, paste0(workDir, 'Extents_Masks_Maps/EcoRegions/Similarity between Ecoregions Calculated Using Presences.csv'))
+# # # write.csv(similarity, paste0(workDir, 'Extents_Masks_Maps/EcoRegions/Similarity between Ecoregions Calculated Using Presences.csv'))
 
 # say('########################################')
 # say('### analyze sample intensity in time ###')
