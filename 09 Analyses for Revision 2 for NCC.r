@@ -13,6 +13,7 @@ rm(list=ls())
 ### libraries, variables, and functions ###
 ### analysis of spatial redundancy between division schemes ###
 ### correlations between variables calculated using temporal windows of different sizes ###
+### extract loadings for variables on PCA ###
 
 ###########################################
 ### libraries, variables, and functions ###
@@ -130,9 +131,9 @@ rm(list=ls())
 						# inSameUnit2 <- inSameUnit2 & inPme2
 						# unitSimilarity <- sum(inSameUnit2, na.rm=TRUE) / 10000
 						
-						# # area
-						# unitPoly1Ea <- sp::spTransform(unitPoly1, getCRS('albersNA', TRUE))
-						# unitArea1 <- gArea(unitPoly1Ea) / 1000^2
+						# # area of unit in scheme #1
+						# unitAreaRast1 <- raster::area(mask, na.rm=TRUE)
+						# unitArea1 <- cellStats(unitAreaRast1, 'sum')
 						
 						# # remember
 						# similarity <- rbind(
@@ -163,42 +164,141 @@ rm(list=ls())
 	
 	# write.csv(similarity, paste0(workDir, '/Analysis - Non-stationarity/Similarity Test between Divisions and PMEs.csv'), row.names=FALSE)
 	
-say('###########################################################################################')
-say('### correlations between variables calculated using temporal windows of different sizes ###')
-say('###########################################################################################')
+	# ### calculate area-weighted probabilities
+	# #########################################
 	
-	op <- readRDS(paste0(workDir, '/Species Records - Pika/!Collated Data 2016-06-30 1256/03 Ochotona princeps - Usable - Presences 1990-2015 - PRISM & DayMet Climate Data Extracted.rds'))
+	# areaWeightedSim <- data.frame()
 	
-	op <- op[SUBSETXXXXXXXXXXXXXXX ]
+	# # by SCHEME #1
+	# for (scheme1 in schemes) {
 	
-	# calculate derived variables for all intervals <= 10 years
-	derived <- list()
-	for (interval in 1:10) {
-	
-		say(interval)
-	
-		vars <- calcDerivedVars(op, window=interval)
-		vars <- vars[ , names(vars) %in% predictorsToUse]
-		vars <- vars[ , predictorsToUse]
-		derived[[interval]] <- vars
-	
-	}
-	
-	# calculate correlations
-	cors <- data.frame()
-	for (interval in 9:1) {
-	
-		theseCors <- cor(vars[[10]], cor[[interval]])
-		names(theseCors) <- predictorsToUse
-		cors <- rbind(cors, theseCors)
+		# # by SCHEME #2
+		# for (scheme2 in schemes[!(schemes %in% scheme1)]) {
 		
-	}
+			# # by PME
+			# for (pme1 in pmes) {
+
+				# # by PME of scheme #2
+				# for (pme2 in pmes) {
+				
+					# indices <- which(similarity$scheme1 == scheme1 & similarity$pme1 == pme1 & similarity$scheme2 == scheme2 & similarity$pme2 == pme2)
+					# areaScheme1 <- similarity$areaUnitScheme1[indices]
+					# simScheme1 <- similarity$similarity[indices]
+					
+					# thisAreaWeightedSim <- sum(areaScheme1 * simScheme1) / sum(areaScheme1)
+					
+					# areaWeightedSim <- rbind(
+						# areaWeightedSim,
+						# data.frame(
+							# scheme1 = scheme1,
+							# pme1 = pme1,
+							# scheme2 = scheme2,
+							# pme2 = pme2,
+							# areaWeightedSim = thisAreaWeightedSim
+						# )
+					# )
+					
+				# } # next PME for SCHEME #2
+				
+			# } # next PME in SCHEME #1
+			
+		# } # next SCHEME #2
+		
+	# } # next SCHEME #1
 	
-	cors <- t(cors)
-	rownames(cors) <- predictorsToUse
+	# write.csv(areaWeightedSim, paste0(workDir, '/Analysis - Non-stationarity/Similarity Test between Divisions and PMEs - Area-Weighted.csv'), row.names=FALSE)
 	
-	names(cors) <- paste0('interval', 9:1)
-	write.csv(cors, paste0(workDir, './Analysis - Non-stationarity/Correlations between Predictors Calculated Using Different Temporal Windows.csv'), row.names=FALSE)
+	# ### average area-weighted probabilities
+	# #######################################
+	
+	# # similarities are not necessarily symmetrical, so calculating average of sim(scheme A pme a --> scheme B pme b) and sim(scheme B pme b --> scheme A pme a)
+	
+	# averagedAreaSim <- data.frame()
+	
+	# # by SCHEME #1
+	# for (scheme1 in schemes[1:(length(schemes) - 1)]) {
+	
+		# # by SCHEME #2
+		# for (scheme2 in schemes[(1 + which(scheme1 == schemes)):length(schemes)]) {
+		
+			# # by PME
+			# for (pme1 in pmes) {
+
+				# # by PME of scheme #2
+				# for (pme2 in pmes) {
+				
+					# areaWeightedSimOneWayIndex <- which(areaWeightedSim$scheme1 == scheme1 & areaWeightedSim$pme1 == pme1 & areaWeightedSim$scheme2 == scheme2 &areaWeightedSim$pme2 == pme2)
+					# areaWeightedSimOtherWayIndex <- which(areaWeightedSim$scheme1 == scheme2 & areaWeightedSim$pme1 == pme2 & areaWeightedSim$scheme2 == scheme1 &areaWeightedSim$pme2 == pme1)
+					
+					# simOneWay <- areaWeightedSim$areaWeightedSim[areaWeightedSimOneWayIndex]
+					# simOtherWay <- areaWeightedSim$areaWeightedSim[areaWeightedSimOtherWayIndex]
+					
+					# meanAreaSim <- mean(c(simOneWay, simOtherWay))
+					
+					# averagedAreaSim <- rbind(
+						# averagedAreaSim,
+						# data.frame(
+							# scheme1=scheme1,
+							# pme1=pme1,
+							# scheme2=scheme2,
+							# pme2=pme2,
+							# meanAreaSim=meanAreaSim
+						# )
+					# )
+					
+				# }
+				
+			# }
+			
+		# }
+		
+	# }
+	
+	# write.csv(averagedAreaSim, paste0(workDir, '/Analysis - Non-stationarity/Similarity Test between Divisions and PMEs - Average of Area-Weighted.csv'), row.names=FALSE)
+	
+# say('###########################################################################################')
+# say('### correlations between variables calculated using temporal windows of different sizes ###')
+# say('###########################################################################################')
+	
+	# op <- readRDS(paste0(workDir, '/Species Records - Pika/!Collated Data 2016-06-30 1256/03 Ochotona princeps - Usable - Presences 1990-2015 - PRISM & DayMet Climate Data Extracted.rds'))
+	
+	# # calculate derived variables for all intervals <= 10 years
+	# derived <- list()
+	# for (interval in 1:10) {
+	
+		# say('interval ', interval)
+	
+		# vars <- calcDerivedVars(op, window=interval)
+		# vars <- vars[ , predictorsToUse]
+		# derived[[interval]] <- vars
+	
+	# }
+	
+	# # calculate correlations
+	# cors <- data.frame()
+	# for (interval in 9:1) {
+	
+		# theseCors <- cor(derived[[10]], derived[[interval]], use='pairwise.complete.obs')
+		# theseCors <- diag(theseCors)
+		# cors <- rbind(cors, theseCors)
+		
+	# }
+	
+	# names(cors) <- predictorsToUse
+	
+	# cors <- t(cors)
+	# rownames(cors) <- predictorsToUse
+	
+	# colnames(cors) <- paste0('interval', 9:1)
+	# write.csv(cors, paste0(workDir, './Analysis - Non-stationarity/Correlations between Predictors Calculated Using Different Temporal Windows.csv'))
+
+# say('#############################################')
+# say('### extract loadings for variables on PCA ###')
+# say('#############################################')
+
+	# pca <- readRDS(paste0(workDir, '/Background Sites/Random - Western USA/BG Sites 04 Set 01 Selected from IUCN Range Map + 800-km Buffer - 10000 Sites - PCA for 2015-10-07.rds'))
+	
+	# write.csv(pca$loadings, paste0(workDir, '/Background Sites/Random - Western USA/BG Sites 04 Set 01 Selected from IUCN Range Map + 800-km Buffer - 10000 Sites - PCA for 2015-10-07 Loadings.csv'))
 	
 say('DONE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!', pre=1)
 say('DONE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
