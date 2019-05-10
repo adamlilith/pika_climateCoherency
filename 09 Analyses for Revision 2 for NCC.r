@@ -14,6 +14,7 @@ rm(list=ls())
 ### analysis of spatial redundancy between division schemes ###
 ### correlations between variables calculated using temporal windows of different sizes ###
 ### extract loadings for variables on PCA ###
+### create base graphics for conceptual figure of climate coherency ###
 
 ###########################################
 ### libraries, variables, and functions ###
@@ -299,6 +300,31 @@ rm(list=ls())
 	# pca <- readRDS(paste0(workDir, '/Background Sites/Random - Western USA/BG Sites 04 Set 01 Selected from IUCN Range Map + 800-km Buffer - 10000 Sites - PCA for 2015-10-07.rds'))
 	
 	# write.csv(pca$loadings, paste0(workDir, '/Background Sites/Random - Western USA/BG Sites 04 Set 01 Selected from IUCN Range Map + 800-km Buffer - 10000 Sites - PCA for 2015-10-07 Loadings.csv'))
+	
+# say('#######################################################################')
+# say('### create base graphics for conceptual figure of climate coherency ###')
+# say('#######################################################################')
+
+	# out <- schemeInfo('ecoregionEpa3Modified', poly=TRUE)
+	# scheme1 <- out$divisionPoly
+	# scheme1_prism <- sp::spTransform(scheme1, getCRS('prism', TRUE))
+	
+	# # basemap
+	# elev <- raster('D:/Ecology/Climate/PRISM/30 arcsec/elevation.tif')
+	# elev <- crop(elev, scheme1_prism)
+	# slope <- terrain(elev, 'slope')
+	# aspect <- terrain(elev, 'aspect')
+	# hs <- hillShade(slope, aspect, direction=135)
+	
+	# grays <- paste0('gray', 100:1)
+	# png(paste0(workDir, '/The Writing Process/Non-Stationarity in Range Limits/Western US.png'), width=2400, height=2400, res=1200)
+	# par(oma=rep(0.01, 4), mar=rep(0, 4))
+	# plot(hs, col=grays, maxpixels=ncell(hs))
+	# dev.off()
+	
+	
+	
+	
 	
 say('DONE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!', pre=1)
 say('DONE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
