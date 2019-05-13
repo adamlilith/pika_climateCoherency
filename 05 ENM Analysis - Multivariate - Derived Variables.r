@@ -13,7 +13,7 @@ rm(list=ls())
 	# do <- 'copy data'
 	# do <- c('train')
 	# do <- 'calculate response heterogeneity'
-	# do <- 'response heterogeneity permutation test'
+	# do <- 'response heterogeneity permutation test > 0'
 	# do <- 'plot hetero ratio'
 	do <- 'plot hetero difference'
 	# do <- 'table of variable importance by scheme and PME'
@@ -942,13 +942,13 @@ if ('calculate response heterogeneity' %in% do) {
 
 }
 
-#####################################################
-### permutation test of heterogeneity of response ###
-#####################################################
+#########################################################
+### permutation test if heterogeneity of response > 0 ###
+#########################################################
 
-if ('response heterogeneity permutation test' %in% do) {
+if ('response heterogeneity permutation test > 0' %in% do) {
 
-	say('response heterogeneity permutation test', level=1)
+	say('response heterogeneity permutation test > 0', level=1)
 
 	# number of randomization iterations
 	iters <- 1000

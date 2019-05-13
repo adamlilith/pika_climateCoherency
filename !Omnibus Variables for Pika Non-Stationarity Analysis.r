@@ -28,13 +28,13 @@
 
 	memory.limit(memory.limit() * 2^30)
     
-	# library(checkpoint)
-	# checkpoint(
-		# snapshotDate = '2017-05-15',
-		# project = paste0(drive, '/ecology/Drive/Research/Iconic Species/pika_climateCoherency'),
-		# checkpointLocation = paste0(drive, '/ecology/Drive/Research/Iconic Species'),
-		# use.knitr=FALSE
-	# )
+	library(checkpoint)
+	checkpoint(
+		snapshotDate = '2017-05-15',
+		project = paste0(drive, '/ecology/Drive/Research/Iconic Species/pika_climateCoherency'),
+		checkpointLocation = paste0(drive, '/ecology/Drive/Research/Iconic Species'),
+		use.knitr=FALSE
+	)
 
 	options(stringsAsFactors=FALSE)
 	gc()
