@@ -15,6 +15,7 @@ rm(list=ls())
 ### correlations between variables calculated using temporal windows of different sizes ###
 ### extract loadings for variables on PCA ###
 ### create base graphics for conceptual figure of climate coherency ###
+### derived-variable models: null model (~Tukey) test for differences between extents using same scheme ###
 
 ###########################################
 ### libraries, variables, and functions ###
@@ -22,7 +23,11 @@ rm(list=ls())
 
 	source(paste0(drive, 'Ecology/Drive/Research/Iconic Species/pika_climateCoherency/!Omnibus Variables for Pika Non-Stationarity Analysis.r'))
 
-	schemes <- c('cladeNonOverlap', 'ecoregionEpa3Modified', 'elevQuantWrtPaeMin', 'physioFenneman')
+	# schemes <- c('cladeNonOverlap', 'ecoregionEpa3Modified', 'elevQuantWrtPaeMin', 'physioFenneman')
+	# schemes <- c('cladeNonOverlap')
+	# schemes <- c('ecoregionEpa3Modified')
+	# schemes <- c('elevQuantWrtPaeMin')
+	schemes <- c('physioFenneman')
 	pmes <- c('pmeNone', 'pmeMin')
 	
 # say('###############################################################')
@@ -322,10 +327,251 @@ rm(list=ls())
 	# plot(hs, col=grays, maxpixels=ncell(hs))
 	# dev.off()
 	
+say('###########################################################################################################')
+say('### derived-variable models: null model (~Tukey) test for differences between extents using same scheme ###')
+say('###########################################################################################################')	
+
+	# number of randomization iterations
+	iters <- 1000
 	
+	# type of prediction
+	predType <- 'Marginal'
 	
-	
-	
+	# quantiles across which to calculate response (response in tails sometimes depends only on a few presences and so sometimes seems erratic)
+	across <- c(0.025, 0.975)
+
+	# number of environmental values across occupied environmental breadth to calculate comparison
+	n <- 100
+
+	say('This permutation procedure tests the null hypothesis that the difference between the among - within differences between PMEs of a given scheme is = 0 (ie it compares, for example, clades w/ broad background and clades w/ narrow backgrounds) using the "Derived Variables" LARS models. It is based on the assumption that the predictions from the k-fold models are drawn from the same distribution, the all-sites unit models from the same distribution, and the composite all-sites models from the same distribution (ie, within a combination of scheme and unit, it controls for differences between unit all-sites models and composite all-sites models). Heterogeneity is calculated as described in previous steps. Predictions for a particular combination of models are truncated by the environmental width of the narrrower k-fold model. Thus the predictions cannot be simply calculated and swapped randomly between within/among components. The first part of this script simply produces a bank of randomized within- and among-unit heterogeneity values for use in a randomization test.', breaks=120, post=2)
+
+	# by SCHEME
+	for (scheme in schemes) {
+
+		out <- schemeInfo(scheme)
+		schemeNice <- out$schemeNice
+		schemeShort <- out$schemeShort
+		divisionFieldPres <- out$divisionFieldPres
+		rm(out); gc()
+
+		thisUnitMeta <- unitMeta[unitMeta$scheme == scheme, ]
+		units <- thisUnitMeta$unit
+		units <- units[-which(units %in% 'all')]
+
+		# define PMEs
+		pme1 <- 'pmeNone'
+		pme2 <- 'pmeMin'
+		
+		pmeNice1 <- pmeNiceName(pme1)
+		pmeNice2 <- pmeNiceName(pme2)
+
+		# data frame to remember results
+		test <- data.frame()
+
+		# load COMPOSITE UNIT ALL-SITES MODEL: PME #1
+		load(paste0(workDir, 'ENMs - Derived/', schemeShort, '/INCLUDING ALL - ', pmeNice1, ' PME/Ochotona princeps/LARS multivariate all sites.Rdata'))
+		allSitesCompositeModel1 <- model$model
+		allSitesCompositePres1 <- model$trainingPresences
+		rm(model); gc()
+
+		# load COMPOSITE UNIT ALL-SITES MODEL: PME #2
+		load(paste0(workDir, 'ENMs - Derived/', schemeShort, '/INCLUDING ALL - ', pmeNice2, ' PME/Ochotona princeps/LARS multivariate all sites.Rdata'))
+		allSitesCompositeModel2 <- model$model
+		allSitesCompositePres2 <- model$trainingPresences
+		rm(model); gc()
+
+		### OBSERVED WITHIN vs AMONG
+		############################
+
+		# by FROM UNIT
+		for (fromUnit in units) {
+		
+			say('SCHEME ', schemeShort, ' | UNIT ', fromUnit, post=0)
+			
+			# load ALL-SITES UNIT model for PME #1
+			load(paste0(workDir, 'ENMs - Derived/', schemeShort, '/INCLUDING ', toupper(fromUnit), ' - ', pmeNice1, ' PME/Ochotona princeps/LARS multivariate all sites.Rdata'))
+			allSitesUnitModel1 <- model$model
+			allSitesUnitPres1 <- model$trainingPresences
+			rm(model); gc()
+
+			# load ALL-SITES UNIT model for PME #2
+			load(paste0(workDir, 'ENMs - Derived/', schemeShort, '/INCLUDING ', toupper(fromUnit), ' - ', pmeNice2, ' PME/Ochotona princeps/LARS multivariate all sites.Rdata'))
+			allSitesUnitModel2 <- model$model
+			allSitesUnitPres2 <- model$trainingPresences
+			rm(model); gc()
+
+			# lists to hold all 8 k-fold models and k-fold presence environmental data
+			kModels1 <- kPres1 <- list()
+			kModels2 <- kPres2 <- list()
+			
+			# load K-FOLD UNIT models for PME#1
+			for (k in 1:kFolds) {
+
+				modelFileName <- paste0(workDir, 'ENMs - Derived/', schemeShort, '/INCLUDING ', toupper(fromUnit), ' - ', pmeNice1, ' PME/Ochotona princeps/LARS multivariate k=', prefix(k, 2), '.Rdata')
+
+				load(modelFileName)
+				kModels1[[k]] <- model$model
+				kPres1[[k]] <- model$trainingPresences
+				rm(model); gc()
+				
+				modelFileName <- paste0(workDir, 'ENMs - Derived/', schemeShort, '/INCLUDING ', toupper(fromUnit), ' - ', pmeNice2, ' PME/Ochotona princeps/LARS multivariate k=', prefix(k, 2), '.Rdata')
+
+				load(modelFileName)
+				kModels2[[k]] <- model$model
+				kPres2[[k]] <- model$trainingPresences
+				rm(model); gc()
+				
+			}
+			
+			# list of all models available for this scheme/PME/unit... will draw from these at random
+			allKModels <- c(kModels1, kModels2)
+			allAllSitesUnitModels <- c(list(allSitesUnitModel1), list(allSitesUnitModel2))
+			allAllSitesCompositeModels <- c(list(allSitesCompositeModel1), list(allSitesCompositeModel2))
+			allPresCollated <- c(kPres1, kPres2)
+
+			rm(kModels1, kModels2, kPres1, kPres2); gc()
+			
+			# by PREDICTOR
+			for (thisPred in predictorsToUse) {
+
+				say(thisPred, post=0)
+
+				# by ITERATION
+				for (iter in 1:iters) {
+
+					# randomization of models
+					index <- sample(seq_along(allKModels), 2)
+					kModelRand1 <- allKModels[[index[1]]]
+					kModelRand2 <- allKModels[[index[2]]]
+					
+					kPresRand1 <- allPresCollated[[index[1]]]
+					kPresRand2 <- allPresCollated[[index[2]]]
+
+					index <- sample(seq_along(allAllSitesUnitModels), 2)
+					allSitesUnitModelRand1 <- allAllSitesUnitModels[[index[1]]]
+					allSitesUnitModelRand2 <- allAllSitesUnitModels[[index[2]]]
+
+					index <- sample(seq_along(allAllSitesCompositeModels), 2)
+					allSitesCompositeModelRand1 <- allAllSitesCompositeModels[[index[1]]]
+					allSitesCompositeModelRand2 <- allAllSitesCompositeModels[[index[2]]]
+				
+					# get environment to which to predict
+					env1 <- kPresRand1
+					env2 <- kPresRand2
+
+					env1 <- env1[order(env1[ , thisPred]), ]
+					envRange1 <- quantile(env1[ , thisPred], across)
+					low1 <- envRange1[1]
+					high1 <- envRange1[2]
+
+					env2 <- env2[order(env2[ , thisPred]), ]
+					envRange2 <- quantile(env2[ , thisPred], across)
+					low2 <- envRange2[1]
+					high2 <- envRange2[2]
+
+					low <- max(low1, low2)
+					high <- min(high1, high2)
+					
+					# values of the target variable against which to make comparisons
+					compareValues <- seq(low, high, length.out=n)
+
+					# within occupied environmental range find sites that most closely match the values at which to make comparisons
+					matchingIndex <- rep(NA, n)
+					for (i in 1:n) matchingIndex[i] <- which.min.simple(abs(compareValues[i] - env1[ , thisPred]), tie_value='random')
+					matchingIndex <- unique(matchingIndex)
+					nEffective1 <- length(matchingIndex)
+					env1 <- env1[matchingIndex, predictorsToUse]
+
+					matchingIndex <- rep(NA, n)
+					for (i in 1:n) matchingIndex[i] <- which.min.simple(abs(compareValues[i] - env2[ , thisPred]), tie_value='random')
+					matchingIndex <- unique(matchingIndex)
+					nEffective2 <- length(matchingIndex)
+					env2 <- env2[matchingIndex, predictorsToUse]
+
+					# predict
+					preds <- if (predType == 'Full Model') { NULL } else { thisPred }
+					predKFold1 <- try(predictLars(object=kModelRand1, newdata=env1, type='response', preds=preds))
+					predKFold2 <- try(predictLars(object=kModelRand2, newdata=env2, type='response', preds=preds))
+					predAllSitesUnit1 <- try(predictLars(object=allSitesUnitModelRand1, newdata=env1, type='response', preds=preds))
+					predAllSitesUnit2 <- try(predictLars(object=allSitesUnitModelRand2, newdata=env2, type='response', preds=preds))
+					predAllSitesComposite1 <- try(predictLars(object=allSitesCompositeModelRand1, newdata=env1, type='response', preds=preds))
+					predAllSitesComposite2 <- try(predictLars(object=allSitesCompositeModelRand2, newdata=env2, type='response', preds=preds))
+
+					# calculate heterogeneity of response WITHIN unit
+					if (!is.null(predAllSitesUnit1) & !is.null(predKFold1) & length(predAllSitesUnit1) > 0 & length(predKFold1) > 0 & class(predAllSitesUnit1) != 'try-error' & class(predKFold1) != 'try-error') {
+						heteroWithin1 <- mean((predKFold1 - predAllSitesUnit1)^2, na.rm=TRUE)
+						changeUnitAllSites1 <- diff(range(predAllSitesUnit1))
+					} else {
+						heteroWithin1 <- 0
+						changeUnitAllSites1 <- 0
+					}
+
+					if (!is.null(predAllSitesUnit2) & !is.null(predKFold2) & length(predAllSitesUnit2) > 0 & length(predKFold2) > 0 & class(predAllSitesUnit2) != 'try-error' & class(predKFold2) != 'try-error') {
+						heteroWithin2 <- mean((predKFold2 - predAllSitesUnit2)^2, na.rm=TRUE)
+						changeUnitAllSites2 <- diff(range(predAllSitesUnit2))
+					} else {
+						heteroWithin2 <- 0
+						changeUnitAllSites2 <- 0
+					}
+
+					# calculate heterogeneity of response BETWEEN focal unit all-sites model and composite unit all-sites model
+					if (!is.null(predAllSitesComposite1) & !is.null(predAllSitesUnit1) & length(predAllSitesComposite1) > 0 & length(predAllSitesUnit1) > 0 & class(predAllSitesComposite1) != 'try-error' & class(predAllSitesUnit1) != 'try-error') {
+						heteroAmong1 <- mean((predAllSitesComposite1 - predAllSitesUnit1)^2, na.rm=TRUE)
+						changeCompositeAllSites1 <- diff(range(predAllSitesComposite1))
+					} else {
+						heteroAmong1 <- 0
+						changeCompositeAllSites1 <- 0
+					}
+
+					if (!is.null(predAllSitesComposite2) & !is.null(predAllSitesUnit2) & length(predAllSitesComposite2) > 0 & length(predAllSitesUnit2) > 0 & class(predAllSitesComposite2) != 'try-error' & class(predAllSitesUnit2) != 'try-error') {
+						heteroAmong2 <- mean((predAllSitesComposite2 - predAllSitesUnit2)^2, na.rm=TRUE)
+						changeCompositeAllSites2 <- diff(range(predAllSitesComposite2))
+					} else {
+						heteroAmong2 <- 0
+						changeCompositeAllSites2 <- 0
+					}
+
+					# remember
+					test <- rbind(
+						test,
+						data.frame(
+							scheme=scheme,
+							pme1=pme1,
+							pme2=pme2,
+							fromUnit=fromUnit,
+							predType=tolower(predType),
+							envWidth='kfold',
+							across=paste(across, collapse=' '),
+							n=n,
+							nEffective1=nEffective1,
+							nEffective2=nEffective2,
+							iters=iters,
+							iter=iter,
+							predictor=thisPred,
+							heteroWithin1=heteroWithin1,
+							heteroWithin2=heteroWithin2,
+							heteroAmong1=heteroAmong1,
+							heteroAmong2=heteroAmong2,
+							changeUnitAllSites1=changeUnitAllSites1,
+							changeUnitAllSites2=changeUnitAllSites2,
+							changeCompositeAllSites1=changeCompositeAllSites1,
+							changeCompositeAllSites2=changeCompositeAllSites2
+						)
+					)
+				
+				} # next iteration
+		
+			} # next predictor
+			
+			say('')
+			
+		} # next from unit
+			
+		save(test, file=paste0(workDir, 'ENMs - Derived/Heterogeneity in Response Curves - Randomization Values for Testing Difference between PMEs in Same Scheme for  ', schemeNice, '.Rdata'))
+		rm(test)
+		
+	} # next scheme
+
 say('DONE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!', pre=1)
 say('DONE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
 say('DONE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
