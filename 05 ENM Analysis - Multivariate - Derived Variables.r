@@ -111,8 +111,7 @@ rm(list=ls())
 ### libraries, variables, and functions ###
 ###########################################
 
-source(paste0(drive, '/ecology/Drive/Research/Iconic Species/pika_climateCoherency/!Omnibus Variables for Pika Non-Stationarity Analysis.r'))
-
+	source(paste0(drive, '/ecology/Drive/Research/Iconic Species/pika_climateCoherency/!Omnibus Variables for Pika Non-Stationarity Analysis.r'))
 
 #######################################################################################################
 ### copy model training data for ALL unit of each division schemes and convert unit field to factor ###
@@ -834,7 +833,7 @@ if ('calculate response heterogeneity' %in% do) {
 
 						say('SCHEME ', schemeShort, ' | PME ', pmeNice, ' | VALANCE ', fromValance, ' | UNIT ', fromUnit, ' | K ', k, post=0)
 
-						# load K-FOLD UNIT model
+						# load K-FOLD model
 						modelFileName <- paste0(workDir, 'ENMs - Derived/', schemeShort, '/', toupper(fromValance), ' ', toupper(fromUnit), ' - ', pmeNice, ' PME/Ochotona princeps/LARS multivariate k=', prefix(k, 2), '.Rdata')
 
 						# if model exists
