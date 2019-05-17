@@ -673,7 +673,7 @@ rm(list=ls())
 			
 		# } # next from unit
 			
-		# save(test, file=paste0(workDir, 'ENMs - Derived/Heterogeneity in Response Curves - Randomization Values for Testing Difference between PMEs in Same Scheme for  ', schemeNice, '.Rdata'))
+		# save(test, file=paste0(workDir, 'ENMs - Derived/Heterogeneity in Response Curves - Randomization Values for Testing Difference between PMEs in Same Scheme for ', schemeNice, '.Rdata'))
 		# rm(test)
 		
 	# } # next scheme
@@ -683,7 +683,7 @@ say('### derived-variable models: null model (~Tukey) test for differences BETWE
 say('#####################################################################################################')	
 
 	# number of randomization iterations
-	iters <- 1000
+	iters <- 100
 	
 	# type of prediction
 	predType <- 'Marginal'
@@ -755,9 +755,6 @@ say('###########################################################################
 
 		for (countScheme2 in (countScheme1 + 1):length(schemes)) {
 
-			# data frame to remember results
-			randomized <- data.frame()
-
 			# scheme info
 			scheme2 <- schemes[countScheme2]
 			
@@ -789,6 +786,9 @@ say('###########################################################################
 				# by PME SCHEME #2
 				for (pme2 in pmes) {
 
+					# data frame to remember results
+					randomized <- data.frame()
+				
 					pmeNice2 <- pmeNiceName(pme2)
 
 					say(schemeNice1, ' ', pmeNice1, ' PME vs ', schemeNice2, ' ', pmeNice2, ' PME:', post=0)
@@ -956,6 +956,7 @@ say('###########################################################################
 													envWidth = 'kfold',
 													n = n,
 													k = kFold,
+													iters = iters,
 													iter = iter,
 													predictor = pred,
 													randHeteroWithin1 = randHeteroWithin1,
@@ -986,17 +987,18 @@ say('###########################################################################
 					} # next UNIT #1
 					
 					rm(allSitesCompositeModel2, allSitesCompositePres2); gc()
-					
+					say('')
+				
+					fileName <- paste0(workDir, 'ENMs - Derived/Heterogeneity in Response Curves - Randomized Values for Testing Difference between SCHEMES and PMEs for ', schemeNice1, ' ', pmeNice1, ' PME vs ', schemeNice2, ' ', pmeNice2, ' PME.Rdata')
+					save(randomized, file=fileName)
+					rm(randomized)
+		
 				} # next PME #2
 				
 				rm(allSitesCompositeModel1, allSitesCompositePres1); gc()
 				
 			} # next PME #1
 			
-			fileName <- paste0(workDir, 'ENMs - Derived/Heterogeneity in Response Curves - Randomization Values for Testing Difference between SCHEMES and PMEs for  ', schemeNice1, ' vs ', schemeNice2, '.Rdata')
-			save(randomized, file=fileName)
-			rm(randomized)
-		
 		} # next SCHEME #2
 		
 	} # next SCHEME #1
