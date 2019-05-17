@@ -1130,7 +1130,7 @@ if ('response heterogeneity permutation test > 0' %in% do) {
 				
 			} # next from valance
 			
-			saveRDS(test, paste0(workDir, 'ENMs - Derived/Heterogeneity in Response Curves - Randomization Values for ', schemeNice, ' ', pmeNice, ' PME.rds'))
+			saveRDS(test, paste0(workDir, 'ENMs - Derived/Heterogeneity in Response Curves - Randomization Values for ', schemeNice, ' ', pmeNice, ' PME to Test if Different from 0.rds'))
 			rm(test)
 
 		} # next PME
