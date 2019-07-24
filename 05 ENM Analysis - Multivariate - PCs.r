@@ -30,7 +30,7 @@ rm(list=ls())
 	# do <- 'statistical analysis of difference between (within - among) vs 0'
 	# do <- 'statistical analysis of difference between (within - among) between PMEs of the same scheme'
 	# do <- 'statistical analysis of difference between (within - among) between schemes/PMEs of different schemes'
-	do <- 'boxplot within MINUS among'
+	# do <- 'boxplot within MINUS among'
 	# do <- 'summarize model performance'
 
 	# algos <- c('brt', 'gam', 'glm', 'maxent', 'rf')
@@ -2999,7 +2999,7 @@ if ('statistical analysis of difference between (within - among) between PMEs of
 
 	say('statistical analysis of difference between (within - among) between PMEs of the same scheme', level=1)
 
-	say('I will use randomization tests to determine the statistical significance of differences between schemes and PMEs. The response metric will be the average difference of within-unit performance minus among-unit performance (CBI). Randomization tests are the appropriate test because schemes/PMEs are not strictly independent since they share they same generative presence data.  The difference is the appropriate metric since the dividend can have undesirable properties because CBI can equal 0 or values < 0. Note that random within/among values will be drawn such that the probability of drawing *any* within values is equal to the probability of drawing the among value.', breaks=90, post=2)
+	say('I will use randomization tests to determine the statistical significance of differences between schemes and PMEs. The response metric will be the average difference of within-unit performance minus among-unit performance (CBI). Randomization tests are the appropriate test because schemes/PMEs are not strictly independent since they share they same generative presence data.  The difference between (within and among) is the appropriate metric since the dividend can have undesirable properties arising from the fact that CBI can equal 0 or values < 0. Note that random within/among values will be drawn such that the probability of drawing *any* within values is equal to the probability of drawing the among value.', breaks=90, post=2)
 	say('To test for differences of scheme-PME sets from 0 I will permute each set of within-among measures (randomly assigning which value is within/among--with weighted probabilities).', post=2)
 	say('To test for differences within schemes between PME sets I will randomly assign a within-unit measure to each k-fold drawn from either the observed measure of the measure from the same scheme but opposing PME.', post=2)
 
@@ -3238,7 +3238,7 @@ if ('statistical analysis of difference between (within - among) between schemes
 	master <- data.frame()
 
 	# by SCHEME
-	for (scheme in c('cladeNonOverlap', 'ecoregionEpa3Modified', 'elevQuantWrtPaeMin', 'physioFenneman')) {
+	for (scheme in schemes) {
 
 		schemeNice <- schemeInfo(scheme)$schemeNice
 		schemeShort <- schemeInfo(scheme)$schemeShort
@@ -3248,9 +3248,9 @@ if ('statistical analysis of difference between (within - among) between schemes
 
 			pmeNice <- pmeNiceName(pme)
 
-				file <- paste0(workDir, 'ENMs - PCs/', schemeShort, '/ENM Evaluations - ', schemeNice, ' - ', pmeNice, ' PME - ENSEMBLE - MOP-Adjusted.Rdata')
-				load(file)
-				master <- rbind(master, evalFrame)
+			file <- paste0(workDir, 'ENMs - PCs/', schemeShort, '/ENM Evaluations - ', schemeNice, ' - ', pmeNice, ' PME - ENSEMBLE - MOP-Adjusted.Rdata')
+			load(file)
+			master <- rbind(master, evalFrame)
 
 		} # next PME
 

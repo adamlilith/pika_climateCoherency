@@ -1,6 +1,4 @@
 calcDerivedVars <- function(x, window=10, rawCol=NULL, verbose=TRUE) {
-# calcDerivedVars 
-#
 # ARGUMENTS
 # x			Data frame with raw climate variables
 # window	Integer >= 0, number of years prior to observation over which to calculate climate variables
@@ -8,39 +6,12 @@ calcDerivedVars <- function(x, window=10, rawCol=NULL, verbose=TRUE) {
 #				Integer(s) indicating column names of raw climate data. If supplied then these columns will be removed from the output.
 #				NULL. Do not remove raw data columns (include them in the output).
 # verbose	Logical, if TRUE then displays progress
-#
-# VALUES
-# 
-# 
-# REQUIRED DEPENDANCIES
-#
-#
-# OPTIONAL DEPENDANCIES
-#
-#
-# BAUHAUS
-# 
-#
-# EXAMPLE
-# FUNCTION()
-#
-# SOURCE	source('C:/ecology/Drive/Research/Iconic Species/Scripts - Non-stationarity/Function - Calculate Derived Climate Variables.r')
-#
-# TESTING
-#
-#
-# LICENSE
-# This document is copyright ©2014 by Adam B. Smith.  This document is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 3, or (at your option) any later version.  This document is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details. Copies of the GNU General Public License versions are available at http://www.R-project.org/Licenses/.
-#
-# AUTHOR	Adam B. Smith | Missouri Botanical Garden, St. Louis, Missouri | adamDOTsmithATmobotDOTorg
-# DATE		
-# REVISIONS 
 
 #################################
 ### FUNCTIONS AND DEFINITIONS ###
 #################################
 
-source('C:/ecology/Drive/R/!Omnibus.r')
+source('C:/ecology/Drive/R/!Other/!Omnibus.r')
 
 cv <- function(x) sd(x, na.rm=TRUE) / mean(x, na.rm=TRUE)
 

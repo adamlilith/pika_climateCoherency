@@ -1,8 +1,7 @@
 ### Ochotona princeps - Spatially-varying importance of variables
 ### Adam B. Smith | 2016-11
 
-# source('C:/ecology/Drive/Research/Iconic Species/Scripts - Non-stationarity/05 ENM Analysis - Multivariate - Derived Variables.r')
-# source('E:/ecology/Drive/Research/Iconic Species/Scripts - Non-stationarity/05 ENM Analysis - Multivariate - Derived Variables.r')
+# source('C:/Ecology/Drive/Research/Iconic Species/pika_climateCoherency/05 ENM Analysis - Multivariate - Derived Variables.r')
 
 rm(list=ls())
 
@@ -14,7 +13,7 @@ rm(list=ls())
 	# do <- 'copy data'
 	# do <- c('train')
 	# do <- 'calculate response heterogeneity'
-	# do <- 'response heterogeneity permutation test'
+	# do <- 'response heterogeneity permutation test > 0'
 	# do <- 'plot hetero ratio'
 	do <- 'plot hetero difference'
 	# do <- 'table of variable importance by scheme and PME'
@@ -112,8 +111,7 @@ rm(list=ls())
 ### libraries, variables, and functions ###
 ###########################################
 
-source(paste0(drive, '/ecology/Drive/Research/Iconic Species/Scripts - Non-stationarity/!Omnibus Variables for Pika Non-Stationarity Analysis.r'))
-
+	source(paste0(drive, '/ecology/Drive/Research/Iconic Species/pika_climateCoherency/!Omnibus Variables for Pika Non-Stationarity Analysis.r'))
 
 #######################################################################################################
 ### copy model training data for ALL unit of each division schemes and convert unit field to factor ###
@@ -835,7 +833,7 @@ if ('calculate response heterogeneity' %in% do) {
 
 						say('SCHEME ', schemeShort, ' | PME ', pmeNice, ' | VALANCE ', fromValance, ' | UNIT ', fromUnit, ' | K ', k, post=0)
 
-						# load K-FOLD UNIT model
+						# load K-FOLD model
 						modelFileName <- paste0(workDir, 'ENMs - Derived/', schemeShort, '/', toupper(fromValance), ' ', toupper(fromUnit), ' - ', pmeNice, ' PME/Ochotona princeps/LARS multivariate k=', prefix(k, 2), '.Rdata')
 
 						# if model exists
@@ -943,13 +941,13 @@ if ('calculate response heterogeneity' %in% do) {
 
 }
 
-#####################################################
-### permutation test of heterogeneity of response ###
-#####################################################
+#########################################################
+### permutation test if heterogeneity of response > 0 ###
+#########################################################
 
-if ('response heterogeneity permutation test' %in% do) {
+if ('response heterogeneity permutation test > 0' %in% do) {
 
-	say('response heterogeneity permutation test', level=1)
+	say('response heterogeneity permutation test > 0', level=1)
 
 	# number of randomization iterations
 	iters <- 1000
@@ -1132,7 +1130,7 @@ if ('response heterogeneity permutation test' %in% do) {
 				
 			} # next from valance
 			
-			saveRDS(test, paste0(workDir, 'ENMs - Derived/Heterogeneity in Response Curves - Randomization Values for ', schemeNice, ' ', pmeNice, ' PME.rds'))
+			saveRDS(test, paste0(workDir, 'ENMs - Derived/Heterogeneity in Response Curves - Randomization Values for ', schemeNice, ' ', pmeNice, ' PME to Test if Different from 0.rds'))
 			rm(test)
 
 		} # next PME
@@ -1254,7 +1252,7 @@ if ('plot hetero difference' %in% do) {
 
 	say('plot among - within heterogeneity in response', level=1)
 
-	# generalizaton
+	# generalization
 	ylim <- c(-0.4, 1)
 
 	say('5 x 4 plot, one per predictor.')
@@ -1286,8 +1284,11 @@ if ('plot hetero difference' %in% do) {
 	
 	
 	# table tabulating times each scenario/PME has largest value of within - among
-	greatestConsistencyByShemePme <- rep(0, 8)
-	names(greatestConsistencyByShemePme) <- paste0(rep(schemes, each=2), '_', c('pmeMin', 'pmeNone'))
+	greatestConsistencyBySchemePme <- secondGreatestConsistencyBySchemePme <- thirdGreatestConsistencyBySchemePme <- fourthGreatestConsistencyBySchemePme <- rep(0, 8)
+	names(greatestConsistencyBySchemePme) <- names(secondGreatestConsistencyBySchemePme) <- names(thirdGreatestConsistencyBySchemePme) <- names(fourthGreatestConsistencyBySchemePme) <- paste0(rep(schemes, each=2), '_', c('pmeMin', 'pmeNone'))
+
+	rep(0, 8)
+	names(secondGreatestConsistencyBySchemePme) <- paste0(rep(schemes, each=2), '_', c('pmeMin', 'pmeNone'))
 
 	tallyPredImpBySchemePme <- data.frame(predictor=predictorsToUse)
 	for (schemePme in paste0(rep(schemes, each=2), '_', c('pmeMin', 'pmeNone'))) {
@@ -1437,6 +1438,9 @@ if ('plot hetero difference' %in% do) {
 
 				allObsDiffs[!allSig] <- -Inf
 				greatest <- which.max(allObsDiffs)
+				secondGreatest <- which.max(allObsDiffs[-greatest])
+				thirdGreatest <- which.max(allObsDiffs[-c(greatest, secondGreatest)])
+				fourthGreatest <- which.max(allObsDiffs[-c(greatest, secondGreatest, thirdGreatest)])
 
 				ats <- 0.5 + 1:4
 				ats <- sort(c(ats - 0.15, ats + 0.15))
@@ -1444,7 +1448,10 @@ if ('plot hetero difference' %in% do) {
 				pch <- if (greatest %% 2 == 0) { 24 } else { 25 }
 				points(ats[greatest], 0.9, pch=pch, col='black', bg=allLight[greatest], xpd=NA, lwd=0.6, cex=0.8)
 				
-				greatestConsistencyByShemePme[greatest] <- greatestConsistencyByShemePme[greatest] + 1
+				greatestConsistencyBySchemePme[greatest] <- greatestConsistencyBySchemePme[greatest] + 1
+				secondGreatestConsistencyBySchemePme[secondGreatest] <- secondGreatestConsistencyBySchemePme[secondGreatest] + 1
+				thirdGreatestConsistencyBySchemePme[thirdGreatest] <- thirdGreatestConsistencyBySchemePme[thirdGreatest] + 1
+				fourthGreatestConsistencyBySchemePme[fourthGreatest] <- fourthGreatestConsistencyBySchemePme[fourthGreatest] + 1
 				
 			}
 			
@@ -1455,12 +1462,21 @@ if ('plot hetero difference' %in% do) {
 	dev.off()
 		
 	say('Number of times each schemes/PMEs was significantly >0 *and* had the largest value of (within - among) response curve heterogeneity:')
-	print(as.matrix(greatestConsistencyByShemePme))
+	print(as.matrix(greatestConsistencyBySchemePme))
+	say('')
+	say('Number of times each schemes/PMEs was significantly >0 *and* had the second-largest value of (within - among) response curve heterogeneity:')
+	print(as.matrix(secondGreatestConsistencyBySchemePme))
+	say('')
+	say('Number of times each schemes/PMEs was significantly >0 *and* had the third-largest value of (within - among) response curve heterogeneity:')
+	print(as.matrix(thirdGreatestConsistencyBySchemePme))
+	say('')
+	say('Number of times each schemes/PMEs was significantly >0 *and* had the fourth-largest value of (within - among) response curve heterogeneity:')
+	print(as.matrix(fourthGreatestConsistencyBySchemePme))
 	say('')
 	say('Mean importance of each predictor by scheme/PME (NaN means not significant):')
 	print(tallyPredImpBySchemePme)
 	
-	save(greatestConsistencyByShemePme, file='./ENMs - Derived/Number of Times each Scheme and PME had Greatest Climate Consistency.RData')
+	save(greatestConsistencyBySchemePme, file='./ENMs - Derived/Number of Times each Scheme and PME had Greatest Climate Consistency.RData')
 	save(tallyPredImpBySchemePme, file='./ENMs - Derived/Predictor Importance by Scheme and PME.RData')
 	
 }

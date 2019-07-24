@@ -1,1 +1,3 @@
 # pika_climateCoherency
+
+This repository contains code to analyze intraspecific variation in how American pikas (Ochotona princeps) respond to climate. The analysis revolves around measures of climate "coherency," which indicates how variable responses to climate are within geographic/ecological units compared to across units. A subdivision scheme with high levels of coherency is better at capturing within-species variability than one with low coherency.
