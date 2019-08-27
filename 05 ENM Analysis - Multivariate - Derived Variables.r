@@ -1273,7 +1273,7 @@ if ('plot hetero difference' %in% do) {
 			load(paste0(workDir, 'ENMs - Derived/Heterogeneity in Response Curves ', scheme, ' ', pme, '.Rdata'))
 
 			# load randomized values: loads "test"
-			load(paste0(workDir, 'ENMs - Derived/Heterogeneity in Response Curves - Randomization Values for ', schemeNice, ' ', pmeNice, ' PME.RData'))
+			load(paste0(workDir, 'ENMs - Derived/Heterogeneity in Response Curves - Randomization Values for ', schemeNice, ' ', pmeNice, ' PME to Test if Different from 0.RData'))
 
 			obs <- rbind(obs, hetero)
 			nulls <- rbind(nulls, test)
@@ -1296,13 +1296,13 @@ if ('plot hetero difference' %in% do) {
 		names(tallyPredImpBySchemePme)[ncol(tallyPredImpBySchemePme)] <- schemePme
 	}
 	
-	png(paste0(workDir, '/ENMs - Derived/Difference between Among and Within Group Heterogeneity in Response Curves for Both PMEs.png'), width=4 * 300, height=5 * 300, res=300)
+	pdf(paste0(workDir, '/ENMs - Derived/Difference between Among and Within Group Heterogeneity in Response Curves for Both PMEs.pdf'), width=4 * 3, height=5 * 3, colormodel='cmyk', compress=FALSE)
 	
-	par(mfrow=c(5, 4), mgp=c(0.77, 0.1, 0), tck=-0.02, cex.lab=0.6, cex.axis=0.6, cex.main=0.6, bty='n', lwd=0.7, lwd=0.5)
-	op <- par(oma = c(5, 2, 0, 0) + 0.1, mar = c(0.2, 0, 1, 2) + 0.1)
+	par(mfrow=c(5, 4), mgp=c(1.9, 0.4, 0), tck=-0.02, cex.lab=1, cex.axis=1, cex.main=1, bty='n', lwd=1, oma = c(7, 5, 3, 3) + 0.1, mar = c(3, 0.1, 1, 2) + 0.1)
 
 		# by PREDICTOR
 		for (countPred in seq_along(predictorsToUse)) {
+		# for (countPred in 1:5) {
 
 			thisPred <- predictorsToUse[countPred]
 		
@@ -1312,12 +1312,13 @@ if ('plot hetero difference' %in% do) {
 				''
 			}
 		
-			plot(1:5, 1:5, ylim=ylim, xlab='', ylab=ylab, main='', col='white', xaxt='n', cex.lab=0.6, cex.axis=0.6, cex.main=0.5, xpd=NA)
+			plot(1:5, 1:5, ylim=ylim, xlab='', ylab=ylab, main='', col='white', xaxt='n', cex.lab=1.6, cex.axis=1.2, cex.main=1, xpd=NA)
 			
 			if (countPred >= 17) axis(1, at=1:4 + 0.5, labels=NA)
 
+			# main title
 			labels <- paste0(letters[countPred], ') ', fields$nameShort[which(fields$factor %in% thisPred)])
-			text(0, 1.2, labels=labels, xpd=NA, cex=0.6, pos=4)
+			text(0.515, 1.15, labels=labels, xpd=NA, cex=1.6, pos=4)
 			
 			lines(c(1.1, 4.9), c(0, 0), col='gray', lwd=1)
 
@@ -1345,7 +1346,7 @@ if ('plot hetero difference' %in% do) {
 				units <- getUnits(scheme, FALSE)
 
 				# scheme label
-				if (countPred >= 17) text(at, ylim[1] - 0.1 * diff(ylim), srt=60, adj=1, labels=schemeNice, xpd=NA, cex=0.7)
+				if (countPred >= 17) text(at, ylim[1] - 0.1 * diff(ylim), srt=60, adj=1, labels=schemeNice, xpd=NA, cex=1.6)
 				
 				# by PME
 				for (pme in c('pmeMin', 'pmeNone')) {
@@ -1420,14 +1421,13 @@ if ('plot hetero difference' %in% do) {
 					colLight <- if (sig) { colLight } else { 'white' } # color if significant
 					colDark <- if (sig) { colDark } else { 'gray' } # color if significant
 					
-					boxplot(obsDiff, at=thisAt, border=colDark, col=colLight, add=TRUE, lwd=0.7, pars=list(boxwex=width))
+					boxplot(obsDiff, at=thisAt, border=colDark, col=colLight, add=TRUE, lwd=0.7, pars=list(boxwex=width, outcex=1.3), ann=FALSE, yaxt='n', lwd=1.2)
 					
 					tallyPredImpBySchemePme[tallyPredImpBySchemePme$predictor == thisPred, names(tallyPredImpBySchemePme) == paste0(scheme, '_', pme)] <- if (allSig[paste0(scheme, '_', pme)]) {
 						mean(obsDiff)
 					} else {
 						NaN
 					}
-					
 					
 				} # next PME
 				
@@ -1446,7 +1446,7 @@ if ('plot hetero difference' %in% do) {
 				ats <- sort(c(ats - 0.15, ats + 0.15))
 				
 				pch <- if (greatest %% 2 == 0) { 24 } else { 25 }
-				points(ats[greatest], 0.9, pch=pch, col='black', bg=allLight[greatest], xpd=NA, lwd=0.6, cex=0.8)
+				points(ats[greatest], 0.9, pch=pch, col='black', bg=allLight[greatest], xpd=NA, lwd=0.6, cex=1.6)
 				
 				greatestConsistencyBySchemePme[greatest] <- greatestConsistencyBySchemePme[greatest] + 1
 				secondGreatestConsistencyBySchemePme[secondGreatest] <- secondGreatestConsistencyBySchemePme[secondGreatest] + 1

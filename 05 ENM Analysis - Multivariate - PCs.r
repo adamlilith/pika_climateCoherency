@@ -1,8 +1,8 @@
 ### Ochotona princeps - Spatially-varying importance of variables
 ### Adam B. Smith | 2016-11
 
-# source('C:/ecology/Drive/Research/Iconic Species/Scripts - Non-stationarity/05 ENM Analysis - Multivariate - PCs.r')
-# source('E:/ecology/Drive/Research/Iconic Species/Scripts - Non-stationarity/05 ENM Analysis - Multivariate - PCs.r')
+# source('C:/ecology/Drive/Research/Iconic Species/pika_climateCoherency/05 ENM Analysis - Multivariate - PCs.r')
+# source('E:/ecology/Drive/Research/Iconic Species/pika_climateCoherency/05 ENM Analysis - Multivariate - PCs.r')
 
 rm(list=ls())
 
@@ -30,7 +30,7 @@ rm(list=ls())
 	# do <- 'statistical analysis of difference between (within - among) vs 0'
 	# do <- 'statistical analysis of difference between (within - among) between PMEs of the same scheme'
 	# do <- 'statistical analysis of difference between (within - among) between schemes/PMEs of different schemes'
-	# do <- 'boxplot within MINUS among'
+	do <- 'boxplot within MINUS among'
 	# do <- 'summarize model performance'
 
 	# algos <- c('brt', 'gam', 'glm', 'maxent', 'rf')
@@ -146,7 +146,7 @@ rm(list=ls())
 ### libraries, variables, and functions ###
 ###########################################
 
-source(paste0(drive, 'ecology/Drive/Research/Iconic Species/Scripts - Non-stationarity/!Omnibus Variables for Pika Non-Stationarity Analysis.r'))
+source(paste0(drive, 'ecology/Drive/Research/Iconic Species/pika_climateCoherency/!Omnibus Variables for Pika Non-Stationarity Analysis.r'))
 
 testStatNice <- statNice(testStat)
 
@@ -3363,11 +3363,10 @@ if ('boxplot within MINUS among' %in% do) {
 	# generalization
 	mopPerc <- c(0.5, 1)
 	
-	# colMinPme <- 'darkgreen'
-	# colNoPme <- 'firebrick'
-
-	colMinPme <- '#1b9e77'
-	colNoPme <- '#d95f02'
+	borderMinPme <- '#d95f02'
+	fillMinPme <- '#fc8d62'
+	borderNoPme <- '#1b9e77'
+	fillNoPme <- '#66c2a5'
 
 	offset <- 0.13
 
@@ -3414,12 +3413,13 @@ if ('boxplot within MINUS among' %in% do) {
 				ylim <- c(-0.05, 0.05)
 			}
 
-			png(paste0(workDir, './ENMs - PCs/!Within minus Among Performance - ', testStatNice, ' Using MOP = ', thisMopPerc, '.png'), width=1000, height=1200, res=300)
+			pdf(paste0(workDir, './ENMs - PCs/!Within minus Among Performance - ', testStatNice, ' Using MOP = ', thisMopPerc, '.pdf'), width=8, height=8, colormodel='cmyk', compress=FALSE)
 
 				# position for each boxplot
-				par(mfrow=c(1, 1), mar=1 * c(7, 4, 4, 2) + 0.1, mgp=c(2, 1, 0), cex.main=0.6, cex.axis=0.6, cex.lab=0.8)
+				par(mfrow=c(1, 1), mar=1 * c(7, 4, 4, 2) + 0.1, mgp=c(2, 0.8, 0), cex.main=1.6, cex.axis=0.95, cex.lab=1.3, oma=c(2, 1, 1, 1))
 
-				plot(1:4, 1:4, col='white', xlim=c(0.5, 4.5), ylim=ylim, xaxt='n', main=paste0('Within - Among ', testStatNice, ' with MOP = ', thisMopPerc), xlab='', ylab=paste0('Climate coherency\n(within - among model performance)'))
+				# plot(1:4, 1:4, col='white', xlim=c(0.5, 4.5), ylim=ylim, xaxt='n', main=paste0('Within - Among ', testStatNice, ' with MOP = ', thisMopPerc), xlab='', ylab=paste0('Climate coherency\n(within - among model performance)'))
+				plot(1:4, 1:4, col='white', xlim=c(0.5, 4.5), ylim=ylim, xaxt='n', xlab='', ylab=paste0('Climate coherency\n(within - among model performance)'), xpd=NA)
 				axis(side=1, at=1:4, labels=FALSE)
 				lines(c(0.5, 4.5), c(0, 0), col='gray')
 
@@ -3438,10 +3438,12 @@ if ('boxplot within MINUS among' %in% do) {
 
 						# plot settings
 						if (pme == 'pmeMin') {
-							col <- colMinPme
+							border <- borderMinPme
+							fill <- fillMinPme
 							off <- -offset
 						} else {
-							col <- colNoPme
+							border <- borderNoPme
+							fill <- fillNoPme
 							off <- offset
 						}
 
@@ -3451,8 +3453,9 @@ if ('boxplot within MINUS among' %in% do) {
 						pPermute <- thisStats$pPermute
 
 						# plot (note alpha varies by significance using Bonferonni correction)
-						alpha <- if (pPermute < 0.05 / 8) { 0.5 } else { 0.05 }
-						boxplot(diff, at=at + off, col=alpha(col, alpha), border=col, add=TRUE)
+						# alpha <- if (pPermute < 0.05 / 8) { 0.5 } else { 0.05 }
+						fill <- if (pPermute < 0.05 / 8) { fill } else { NA }
+						boxplot(diff, at=at + off, col=fill, border=border, add=TRUE, ann=FALSE, xaxt='n', yaxt='n', xpd=NA, lwd=1.2)
 
 						# # Bonferroni correction
 						# labels <- if (pPermute < 0.001 / 8) { '***' } else if (pPermute < 0.01 / 8) { '**' } else if (pPermute < 0.05 / 8) { '*' } else { '' }
@@ -3481,17 +3484,17 @@ if ('boxplot within MINUS among' %in% do) {
 						
 						}
 						
-						text(at + off, ylim[2] + 0.07 * diff(ylim), labels=labels, cex=0.5, pos=1, xpd=NA)
+						text(at + off, ylim[2] + 0.01 * diff(ylim), labels=labels, cex=1.1, pos=1, xpd=NA)
 					
 					} # next PME
 					
-					text(x=at, y=ylim[1] - 0.15 * diff(ylim), xpd=NA, labels=schemeNice, srt=90, adj=1, cex=0.8, srt=55)
+					text(x=at, y=ylim[1] - 0.08 * diff(ylim), xpd=NA, labels=schemeNice, srt=90, adj=1, cex=1.2, srt=55)
 
 					at <- at + 1
 
 				} # next division scheme
 
-				legend('bottomleft', legend=c('Narrow background', 'Broad background'), fill=c(alpha(colMinPme, 0.5), alpha(colNoPme, 0.5)), border=c(colMinPme, colNoPme), ncol=1, inset=0, bty='n', cex=0.5)
+				legend('bottomleft', legend=c('Narrow background', 'Broad background'), fill=c(fillMinPme, fillNoPme), border=c(borderMinPme, borderNoPme), ncol=1, inset=0, bty='n', cex=1.2)
 
 			dev.off()
 

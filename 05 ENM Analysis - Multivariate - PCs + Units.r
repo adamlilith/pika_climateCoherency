@@ -1,8 +1,8 @@
 ### Ochotona princeps - Spatially-varying importance of variables
 ### Adam B. Smith | 2016-11
 
-# source('C:/ecology/Drive/Research/Iconic Species/Scripts - Non-stationarity/05 ENM Analysis - Multivariate - PCs + Units.r')
-# source('E:/ecology/Drive/Research/Iconic Species/Scripts - Non-stationarity/05 ENM Analysis - Multivariate - PCs + Units.r')
+# source('C:/ecology/Drive/Research/Iconic Species/pika_climateCoherency/05 ENM Analysis - Multivariate - PCs + Units.r')
+# source('E:/ecology/Drive/Research/Iconic Species/pika_climateCoherency/05 ENM Analysis - Multivariate - PCs + Units.r')
 
 rm(list=ls())
 
@@ -74,7 +74,7 @@ rm(list=ls())
 ### libraries, variables, and functions ###
 ###########################################
 
-source(paste0(drive, 'ecology/Drive/Research/Iconic Species/Scripts - Non-stationarity/!Omnibus Variables for Pika Non-Stationarity Analysis.r'))
+	source(paste0(drive, 'ecology/Drive/Research/Iconic Species/pika_climateCoherency/!Omnibus Variables for Pika Non-Stationarity Analysis.r'))
 
 #######################################################################################################
 ### copy model training data for ALL unit of each division schemes and convert unit field to factor ###
@@ -1302,6 +1302,12 @@ if ('boxplots ensemble with 1 panel' %in% do) {
 
 	say('Using ', paste(toupper(algos), collapse=' & '), '!!!')
 
+	borderMinPme <- '#d95f02'
+	fillMinPme <- '#fc8d62'
+	borderNoPme <- '#1b9e77'
+	fillNoPme <- '#66c2a5'
+
+
 	## test statistic for boxplot
 
 		# testStat <- 'cbi'
@@ -1309,7 +1315,7 @@ if ('boxplots ensemble with 1 panel' %in% do) {
 
 	testStatNice <- statNice(testStat)
 
-	ylim <- c(0, 0.45)
+	ylim <- c(-0.05, 0.45)
 	cexBar <- 0.7 # bar text
 
 	## PCA
@@ -1318,10 +1324,10 @@ if ('boxplots ensemble with 1 panel' %in% do) {
 	# y coordinate for box labels
 	barLabelY <- ylim[1] - 0.07 * diff(ylim)
 
-	png(paste0(workDir, '/ENMs - PCs + Units/Variable Importance - ', testStatNice, ' with One Panel.png'), width=1000, height=1200, res=300)
+	pdf(paste0(workDir, '/ENMs - PCs + Units/Variable Importance - ', testStatNice, ' with One Panel.pdf'), width=8, height=8, colormodel='cmyk', compress=FALSE)
 
 		# plot setup
-		par(mfrow=c(1, 1), mar=1 * c(7, 4, 4, 2) + 0.1, mgp=c(2, 1, 0), cex.main=0.6, cex.axis=0.6, cex.lab=0.8)
+		par(mfrow=c(1, 1), mar=1 * c(7, 4, 4, 2) + 0.1, mgp=c(2, 0.8, 0), cex.main=1.6, cex.axis=0.95, cex.lab=1.3, oma=c(2, 1, 1, 1))
 
 		# plot(1:10, 1:10, col='white', xlab='', ylab=paste0(testStatNice, '\n\U2190 more important   less important \U2192'), ylim=ylim, xaxt='n', xlim=c(0.5, 4.5))
 		plot(1:10, 1:10, col='white', xlab='', ylab='Subdivision unit importance', ylim=ylim, xaxt='n', xlim=c(0.5, 4.5))
@@ -1348,10 +1354,13 @@ if ('boxplots ensemble with 1 panel' %in% do) {
 				schemeShortSingular <- out$schemeShortSingular
 				col <- out$col
 				
-				col <- if (pme == 'pmeMin') {
-					'#1b9e77'
+				# plot settings
+				if (pme == 'pmeMin') {
+					border <- borderMinPme
+					fill <- fillMinPme
 				} else {
-					'#d95f02'
+					border <- borderNoPme
+					fill <- fillNoPme
 				}
 				
 				rm(out); gc()
@@ -1361,16 +1370,16 @@ if ('boxplots ensemble with 1 panel' %in% do) {
 
 				# 3) test stat of units permuted (center, front)
 				resp <- 1 - evalFrame[ , paste0(testStat, 'Import_unit')]
-				boxplot(resp, at=at, col=alpha(col, 0.5), border=col, add=TRUE)
+				boxplot(resp, at=at, col=fill, border=border, add=TRUE, ann=FALSE, xaxt='n', yaxt='n')
 				# if (pme == 'pmeMin') text(at + 0.13, barLabelY, labels=schemeShortSingular, srt=90, adj=1, xpd=NA, col='black', cex=cexBar)
-				if (pme == 'pmeMin') text(x=at + 0.13, y=ylim[1] - 0.15 * diff(ylim), xpd=NA, labels=schemeNice, srt=90, adj=1, cex=0.8, srt=55)
+				if (pme == 'pmeMin') text(x=at + 0.13, y=ylim[1] - 0.08 * diff(ylim), xpd=NA, labels=schemeNice, adj=1, cex=1.2, srt=55)
 				
 				if (scheme == 'ecoregionEpa3Modified' & pme == 'pmeMin') {
-					text(at, 0.90 * ylim[2], 'a', pos=3, cex=0.6)
+					text(at, ylim[2] - 0.05 * diff(ylim), 'a', pos=3, cex=1.1)
 				}
 
 				if (scheme == 'elevQuantWrtPaeMin' & pme == 'pmeMin') {
-					text(at, 0.90 * ylim[2], 'ab', pos=3, cex=0.6)
+					text(at, ylim[2] - 0.05 * diff(ylim), 'ab', pos=3, cex=1.1)
 				}
 
 				if (
@@ -1386,7 +1395,7 @@ if ('boxplots ensemble with 1 panel' %in% do) {
 					(scheme == 'physioFenneman' & pme == 'pmeMin')
 					# (scheme == 'physioFenneman' & pme == 'pmeNone')
 				) {
-					text(at, 0.90 * ylim[2], 'b', pos=3, cex=0.6)
+					text(at, ylim[2] - 0.05 * diff(ylim), 'b', pos=3, cex=1.1)
 				}
 
 				at <- at + 1
@@ -1394,6 +1403,9 @@ if ('boxplots ensemble with 1 panel' %in% do) {
 			} # next scheme
 
 		} # next PME
+		
+		legend('bottomleft', legend=c('Narrow background', 'Broad background'), fill=c(fillMinPme, fillNoPme), border=c(borderMinPme, borderNoPme), ncol=1, inset=0, bty='n', cex=1.2)
+		
 
 	dev.off()
 }
