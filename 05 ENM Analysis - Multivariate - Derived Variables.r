@@ -86,6 +86,7 @@ rm(list=ls())
 ### plot response curves of regularized GLMs ###
 ### calculate heterogeneity of response ###
 ### plot within/among heterogeneity in response ###
+### identify most coherent variables for each unit in a scheme/PME ### (post publication!)
 ### plot among - within heterogeneity in response ###
 ### summary plot of response curves ###
 
@@ -1253,11 +1254,23 @@ if ('plot hetero ratio' %in% do) {
 	# coherency
 	hetero$coherency <- (hetero$heteroAmong * hetero$changeCompositeAllSites) - (hetero$heteroWithin * hetero$changeUnitAllSites)
 	
-	agg <- aggregate(hetero, by=list(hetero$scheme, hetero$pme, hetero$fromUnit, hetero$predictor), FUN=mean, na.rm=TRUE)
-	agg$scheme <- agg$pme <- agg$fromUnit <- agg$predictor <- agg$fromUnit <- agg$fromValance <- agg$predType <- agg$envWidth <- agg$n <- agg$k <- NULL
+	agg1 <- aggregate(hetero, by=list(hetero$scheme, hetero$pme, hetero$fromUnit, hetero$predictor), FUN=mean, na.rm=TRUE)
+	agg1$scheme <- agg1$pme <- agg1$fromUnit <- agg1$predictor <- agg1$fromUnit <- agg1$fromValance <- agg1$predType <- agg1$envWidth <- agg1$n <- agg1$k <- NULL
 	
-	names(agg)[1:4] <- c('scheme', 'pme', 'fromUnit', 'predictor')
+	names(agg1)[1:4] <- c('scheme', 'pme', 'fromUnit', 'predictor')
 
+	load('C:/Ecology/Drive/Research/Iconic Species/ENMs - Derived/Heterogeneity in Response Curves ecoregionEpa3Modified pmeMin.RData')
+	
+	# coherency
+	hetero$coherency <- (hetero$heteroAmong * hetero$changeCompositeAllSites) - (hetero$heteroWithin * hetero$changeUnitAllSites)
+	
+	agg2 <- aggregate(hetero, by=list(hetero$scheme, hetero$pme, hetero$fromUnit, hetero$predictor), FUN=mean, na.rm=TRUE)
+	agg2$scheme <- agg2$pme <- agg2$fromUnit <- agg2$predictor <- agg2$fromUnit <- agg2$fromValance <- agg2$predType <- agg2$envWidth <- agg2$n <- agg2$k <- NULL
+	
+	names(agg2)[1:4] <- c('scheme', 'pme', 'fromUnit', 'predictor')
+
+	agg <- rbind(agg1, agg2)
+	
 	write.csv(agg, 'C:/Ecology/Drive/Research/Iconic Species/ENMs - Derived/Heterogeneity in Response Curves ecoregionEpa3Modified pmeNone Aggregated by Unit and Predictor.csv', row.names=FALSE)
 	
 #####################################################
