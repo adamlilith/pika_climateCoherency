@@ -1244,6 +1244,22 @@ if ('plot hetero ratio' %in% do) {
 
 }
 
+######################################################################
+### identify most coherent variables for each unit in a scheme/PME ###
+######################################################################
+
+	load('C:/Ecology/Drive/Research/Iconic Species/ENMs - Derived/Heterogeneity in Response Curves ecoregionEpa3Modified pmeNone.RData')
+	
+	# coherency
+	hetero$coherency <- (hetero$heteroAmong * hetero$changeCompositeAllSites) - (hetero$heteroWithin * hetero$changeUnitAllSites)
+	
+	agg <- aggregate(hetero, by=list(hetero$scheme, hetero$pme, hetero$fromUnit, hetero$predictor), FUN=mean, na.rm=TRUE)
+	agg$scheme <- agg$pme <- agg$fromUnit <- agg$predictor <- agg$fromUnit <- agg$fromValance <- agg$predType <- agg$envWidth <- agg$n <- agg$k <- NULL
+	
+	names(agg)[1:4] <- c('scheme', 'pme', 'fromUnit', 'predictor')
+
+	write.csv(agg, 'C:/Ecology/Drive/Research/Iconic Species/ENMs - Derived/Heterogeneity in Response Curves ecoregionEpa3Modified pmeNone Aggregated by Unit and Predictor.csv', row.names=FALSE)
+	
 #####################################################
 ### plot among - within heterogeneity in response ###
 #####################################################
@@ -1287,16 +1303,16 @@ if ('plot hetero difference' %in% do) {
 	greatestConsistencyBySchemePme <- secondGreatestConsistencyBySchemePme <- thirdGreatestConsistencyBySchemePme <- fourthGreatestConsistencyBySchemePme <- rep(0, 8)
 	names(greatestConsistencyBySchemePme) <- names(secondGreatestConsistencyBySchemePme) <- names(thirdGreatestConsistencyBySchemePme) <- names(fourthGreatestConsistencyBySchemePme) <- paste0(rep(schemes, each=2), '_', c('pmeMin', 'pmeNone'))
 
-	rep(0, 8)
 	names(secondGreatestConsistencyBySchemePme) <- paste0(rep(schemes, each=2), '_', c('pmeMin', 'pmeNone'))
 
+	# tally predictor importance by scheme
 	tallyPredImpBySchemePme <- data.frame(predictor=predictorsToUse)
 	for (schemePme in paste0(rep(schemes, each=2), '_', c('pmeMin', 'pmeNone'))) {
 		tallyPredImpBySchemePme <- cbind(tallyPredImpBySchemePme, this=NA)
 		names(tallyPredImpBySchemePme)[ncol(tallyPredImpBySchemePme)] <- schemePme
 	}
 	
-	pdf(paste0(workDir, '/ENMs - Derived/Difference between Among and Within Group Heterogeneity in Response Curves for Both PMEs.pdf'), width=4 * 3, height=5 * 3, colormodel='cmyk', compress=FALSE)
+	# pdf(paste0(workDir, '/ENMs - Derived/Difference between Among and Within Group Heterogeneity in Response Curves for Both PMEs.pdf'), width=4 * 3, height=5 * 3, colormodel='cmyk', compress=FALSE)
 	
 	par(mfrow=c(5, 4), mgp=c(1.9, 0.4, 0), tck=-0.02, cex.lab=1, cex.axis=1, cex.main=1, bty='n', lwd=1, oma = c(7, 5, 3, 3) + 0.1, mar = c(3, 0.1, 1, 2) + 0.1)
 
