@@ -14,7 +14,7 @@ extractTimePeriod <- function(
 	prismAN81mDir='ecology/Climate/PRISM/AN81m 1981-2015',
 	prismAN81dDir='ecology/Climate/PRISM/AN81d 1981-2015'	
 ) {
-# extractTimePeriod Extract elevation, PRISM, and DayMet climate data based on date of record. For each point in a data frame, extracts annual/monthly/daily climate dat (if available) for a period up to X years prior to the record's date of observation.  X must be such that it does not exceed the temporal bounds of PRISM data (1895 for monthly and 1981 for daily) or DayMet data (1980). Returns a (possibly huge) data frame with the original data plus extracted climate data.
+# extractTimePeriod Extract elevation, PRISM, and DayMet climate data based on date of record. For each point in a data frame, extracts annual/monthly/daily climate data (if available) for a period up to X years prior to the record's date of observation.  X must be such that it does not exceed the temporal bounds of PRISM data (1895 for monthly and 1981 for daily) or DayMet data (1980). Returns a (possibly huge) data frame with the original data plus extracted climate data.
 #
 # For PRISM, annual data will be obtained from the annual rasters in the AN81m data set.
 # For PRISM, monthly data wil be from AN81m monthly rasters.
