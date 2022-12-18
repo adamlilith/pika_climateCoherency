@@ -1,4 +1,4 @@
-<img align="right" src="NCC Cover.png" height="223"/>
+<img align="right" src="NCC Cover.png" height="180"/>
 
 # Alternatives to genetic affinity as a context for within-species response to climate
 
