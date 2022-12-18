@@ -1,5 +1,5 @@
 <!-- badges: start -->
-[![DOI](https://img.shields.io/badge/NCC-10.1038%s41558-019-0584-8-green)](https://doi.org/10.1038/s41558-019-0584-8)
+[![DOI](https://img.shields.io/badge/NCC-10.1038%s41558-019-0584-8 -green)](https://doi.org/10.1038/s41558-019-0584-8)
 <!-- badges: end -->
 
 # Alternatives to genetic affinity as a context for within-species response to climate
