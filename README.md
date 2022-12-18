@@ -2,7 +2,7 @@
 [![DOI](https://zenodo.org/badge/184456912.svg)](https://zenodo.org/badge/latestdoi/184456912)
 <!-- badges: end -->
 
-<img align="right" src="NCC Cover.png" height="180"/>
+<a href="http://dx.doi.org/10.1038/s41558-019-0584-8"><img align="right" src="NCC Cover.png" height="180"/></a>
 
 # Alternatives to genetic affinity as a context for within-species response to climate
 
